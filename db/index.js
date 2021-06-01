@@ -1,87 +1,65 @@
 const Sequelize = require('sequelize');
+const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/amenity-reservation', { logging: false });
 const { STRING, INTEGER } = Sequelize;
-const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/amenity-reservation');
 
+// create tables of User, Amenity and Booking
 const User = conn.define('user', {
-  type: STRING(20),
-  allowNull: false,
-  unique: true,
-})
+  name: {
+    type: STRING
+  }
+});
 const Amenity = conn.define('amenity', {
-  name: { 
-    type: STRING(20),
-    allowNull: false,
-    unique: true,
+  name: {
+    type: STRING,
+    unique: true
   },
   location: {
-    type: STRING(20),
-    allowNull: false,
-    unique: true,
+    type: STRING,
   },
   capacity: {
-    type: STRING(3),
-    allowNull: false,
-    unique: true,
-  }  
-})
-const Booking = conn.define('booking', {})
+    type: INTEGER
+  }
+});
+const Booking = conn.define('booking', {});
 
-Booking.belongsTo(User);
-Booking.belongsTo(Amenity);
-User.hasMany(Booking);
-Amenity.hasMany(Booking);
+Booking.belongsTo(User)
+Booking.belongsTo(Amenity)
+User.hasMany(Booking)
+Amenity.hasMany(Booking)
 
+// syncAndSeed data inside of the table
 const syncAndSeed = async() => {
-  await conn.sync( {force: true} );
-
-  let amenities = [
+  await conn.sync({ force: true })
+  let users = await Promise.all([ 'Sam', 'Billy', 'Joey', 'Tom'].map( name => User.create( { name } )));
+  let amenityDB = [
     {
       name: 'Pool',
-      location: '3rd floor',
-      capacity: '5'
+      location: '1st floor',
+      capacity: 4
+    },
+    {
+      name: 'Gym',
+      location: '24th floor',
+      capacity: 17
     },
     {
       name: 'Rooftop',
       location: '66th floor',
-      capacity: '12'
-    },
-    {
-      name: 'Gym',
-      location: '20th floor',
-      capacity: '20'
-    },
-    {
-      name: 'Grill',
-      location: '5th floor',
-      capacity: '15'
-    },
-    {
-      name: 'Library',
-      location: '3rd floor',
-      capacity: '6'
-    },
+      capacity: 10
+    }
   ];
+  let amenities = await Promise.all( amenityDB.map( am => Amenity.create( {name: am.name, location: am.location, capacity: am.capacity } )) );
+  let bookings = await Promise.all([
+    Booking.create( { userId: 2, amenityId: 1 } ),
+    Booking.create( { userId: 1, amenityId: 1 } )
+  ]);
 
-  amenities = await Promise.all(amenities.map(amenity => Amenity.create(amenity)));
-  amenities = amenities.reduce((acc, amenity) => {
-    acc[amenity.name] = amenity;
-    return acc;
-  }, {})
-
-  let users = await Promise.all([ 'Rebecca, Mary, Tom, Terry, Bill' ].map( name => User.create( { name } )));
-  users = users.reduce((acc, user) => {
-    acc[user.name] = user;
-    return acc;
-  }, {})
-  
-  const bookings = await Promise.all();
-  return {
-    users, amenities, bookings
-  }
-}
+  return { users, amenities, bookings };
+};
 
 module.exports = {
-  syncAndSeed, conn,
+  syncAndSeed,
+  conn,
   models: {
     User, Amenity, Booking
   }

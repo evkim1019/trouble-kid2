@@ -1,7 +1,8 @@
-const { syncAndSeed, models: { User, Amenity, Booking }, conn } = require('./db');
+import axios from 'axios';
 
-
-const displayBookings = async(reserv) =>{
-  const bookingList = document.querySelector('#booking-list');
-  bookingList.innerHTML = reserv.map(res => `<li><a>${reserv.user.id}</a></li>`)
+const insertHTML = async() => {
+  const bookingListInsert = document.querySelector('#bookingListInsert');
+  const DB = (await axios.get('/db/index')).data;
+  bookingListInsert.innerHTML = DB.map( booking => `<li><a href="/${booking.users.id}">${booking.userId}</a></li>`).join('')
 }
+insertHTML();

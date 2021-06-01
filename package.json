@@ -8,12 +8,13 @@
     "build": "webpack",
     "build:dev": "npm run build -- --watch --mode=development",
     "start": "node server",
-    "start:dev": "nodemon server"
+    "start:dev": "npm run build:dev & nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "express": "^4.17.1",
     "pg": "^8.6.0",
     "sequelize": "^6.6.2"
