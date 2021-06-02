@@ -51,7 +51,9 @@ const syncAndSeed = async() => {
   let amenities = await Promise.all( amenityDB.map( am => Amenity.create( {name: am.name, location: am.location, capacity: am.capacity } )) );
   let bookings = await Promise.all([
     Booking.create( { userId: 2, amenityId: 1 } ),
-    Booking.create( { userId: 1, amenityId: 1 } )
+    Booking.create( { userId: 1, amenityId: 1 } ),
+    Booking.create( { userId: 4, amenityId: 3 } ),
+    Booking.create( { userId: 2, amenityId: 2 } )
   ]);
 
   return { users, amenities, bookings };

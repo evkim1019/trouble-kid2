@@ -4,11 +4,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <script src="/dist/main.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;500&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;500&display=swap');
+    body {font-family: 'Prompt', sans-serif; font-weight:300; margin:0; padding:5%; width:90%;}
+    section{ width:45%; display: inline-block; vertical-align:top}
+    section:last-child { border:1px solid red}
+    ul{ margin:0; padding-left:20px;}
+    li{ margin-bottom:1em;}
+  </style>
 </head>
 <body>
   <h1>Amenity booking list</h1>  
+  <section><h2 id="headlineInsert"></h2></section>
   <section>
     <ul id="bookingListInsert"></ul>
+  </section>
+  <section>
+    <h2>Create new booking</h2>
+    <form method="POST">
+      <label>User</label>
+      <select name="userList" id="userListInsert"></select>
+
+      <label>Amenity</label>
+      <select name="amenityList" id="amenityListInsert"></select>
+      <button type="submit">Create</button>
+    </form>
   </section>
 </body>
 </html>
